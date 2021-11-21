@@ -1,0 +1,32 @@
+node{
+
+def mavenHome = tool name: "maven3.8.3"
+
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM('* * * * *')])])
+
+stage('CheckOutCode'){
+git branch: 'development', credentialsId: '76e01125-2feb-4096-ad68-98ee99c074d8', url: 'https://github.com/devops-delhi/amazon.git'
+}
+
+stage('Build'){
+sh "${mavenHome}/bin/mvn clean package"
+}
+
+/*
+stage('ExecuteSonarQubeReport'){
+sh "${mavenHome}/bin/mvn sonar:sonar"
+}
+
+
+stage('UploadArtifactsIntoNexusRepo'){
+sh "${mavenHome}/bin/mvn deploy"
+}
+
+
+stage('DeployAppintoTomcatServer'){
+sshagent(['c38c7c8e-5a39-4e59-a2d9-3913b5437907']) {
+    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.232.156.176:/opt/apache-tomcat-9.0.55/webapps/"
+}
+}
+*/
+}
